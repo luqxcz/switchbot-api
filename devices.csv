@@ -1,0 +1,16 @@
+﻿device.deviceId,device.deviceName,device.deviceType,device.hubDeviceId,device.isInfrared,status.version,status.temperature,status.battery,status.humidity,status.CO2,status.deviceId,status.deviceType,status.hubDeviceId,device.enableCloudService,status.moveDetected,status.brightness,status.lightLevel
+B0E9FE64330F,CIIC — 6th floor CO2,MeterPro(CO2),000000000000,False,V1.8,18.4,100,47,410,B0E9FE64330F,MeterPro(CO2),000000000000,,,,
+B0E9FE82F87C,Ecole JMC — CO2 N of Khadr,MeterPro(CO2),000000000000,False,V1.8,26,100,36,1496,B0E9FE82F87C,MeterPro(CO2),000000000000,,,,
+B0E9FE8DC82E,CIIC — Door 6 second floor motion sensor,Motion Sensor,DB413B3FDCE5,False,V2.0,,100,,,B0E9FE8DC82E,Motion Sensor,DB413B3FDCE5,True,False,dim,
+B0E9FEA58CE8,Meter pro admin,MeterPro(CO2),000000000000,False,V1.7,22.4,100,35,631,B0E9FEA58CE8,MeterPro(CO2),000000000000,,,,
+B0E9FEAD9567,CIIC — Men’s prayer area CO2 Monitor,MeterPro(CO2),000000000000,False,V1.8,20.7,100,43,412,B0E9FEAD9567,MeterPro(CO2),000000000000,,,,
+B0E9FEB47A06,Ecole JMC — Motion Main Stairs,Motion Sensor,D39354C8B2EC,False,V1.5,,100,,,B0E9FEB47A06,Motion Sensor,D39354C8B2EC,True,True,bright,
+B0E9FEB4E4F8,CIIC — Class area 2nd floor CO2 sensor,MeterPro(CO2),000000000000,False,V1.8,21.8,100,33,412,B0E9FEB4E4F8,MeterPro(CO2),000000000000,True,,,
+B0E9FEBC17F9,Ecole JMC — CO2 S Khadr,MeterPro(CO2),000000000000,False,V1.8,24,100,41,1730,B0E9FEBC17F9,MeterPro(CO2),000000000000,,,,
+B0E9FEDF5E1B,Entry Motion Sensor,Motion Sensor,CF7F4C72F1C7,False,V1.5,,100,,,B0E9FEDF5E1B,Motion Sensor,CF7F4C72F1C7,True,False,bright,
+B0E9FEF43E30,CIIC - motion sensor(Men’s prayer space),Motion Sensor,DB413B3FDCE5,False,V2.0,,100,,,B0E9FEF43E30,Motion Sensor,DB413B3FDCE5,True,False,bright,
+CF408522FD87,CIIC - 6th floor Hub,Hub 2,000000000000,False,V1.0-1.1,19.3,,48,,CF408522FD87,Hub 2,CF408522FD87,True,,,20
+CF7F4C72F1C7,Ecole JMC — Hub Daycare,Hub 2,000000000000,False,V1.0-1.1,24.1,,38,,CF7F4C72F1C7,Hub 2,CF7F4C72F1C7,True,,,20
+D12D04064862,CIIC - 6th floor hygrometer,WoIOSensor,CF408522FD87,False,V0.9,12.5,60,51,,D12D04064862,WoIOSensor,CF408522FD87,True,,,
+D39354C8B2EC,Ecole JMC — Hub Khadr’s office,Hub 2,000000000000,False,V3.8-2.6,26.7,,36,,D39354C8B2EC,Hub 2,D39354C8B2EC,True,,,14
+DB413B3FDCE5,CIIC — Main office 2nd floor,Hub 2,000000000000,False,V3.8-2.6,22.5,,45,,DB413B3FDCE5,Hub 2,DB413B3FDCE5,True,,,11
