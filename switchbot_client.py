@@ -163,6 +163,12 @@ def _determine_headers(rows: List[Dict[str, Any]]) -> List[str]:
     return headers
 
 
+def _now_iso(tz_mode: str) -> str:
+    if tz_mode.lower() == 'utc':
+        return datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+    return datetime.now().astimezone().isoformat()
+
+
 def cmd_log_csv(args: argparse.Namespace) -> int:
     out_path = args.out
     include_infrared = not args.skip_infrared
@@ -181,10 +187,17 @@ def cmd_log_csv(args: argparse.Namespace) -> int:
         with open(out_path, 'a', newline='', encoding='utf-8-sig') as f:
             # Lazy init writer after first sample to know headers
             while True:
-                timestamp_iso = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+                # Capture both UTC and local timestamps from a single base time for consistency
+                base_utc = datetime.now(timezone.utc)
+                timestamp_utc = base_utc.isoformat().replace('+00:00', 'Z')
+                timestamp_local = base_utc.astimezone().isoformat()
+                timestamp_alias = timestamp_utc if args.timezone.lower() == 'utc' else timestamp_local
+
                 rows = _collect_device_rows(include_infrared=include_infrared)
                 for r in rows:
-                    r['timestamp'] = timestamp_iso
+                    r['timestamp'] = timestamp_alias
+                    r['timestamp_utc'] = timestamp_utc
+                    r['timestamp_local'] = timestamp_local
 
                 if writer is None:
                     if file_exists and not file_empty:
@@ -210,7 +223,7 @@ def cmd_log_csv(args: argparse.Namespace) -> int:
                 for r in rows:
                     writer.writerow(r)
                 f.flush()
-                print('Appended {} rows at {} to {}'.format(len(rows), timestamp_iso, out_path))
+                print('Appended {} rows at {} to {}'.format(len(rows), timestamp_alias, out_path))
                 time.sleep(max(1, int(interval_seconds)))
         # Unreachable due to infinite loop
     except KeyboardInterrupt:
@@ -244,6 +257,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_log.add_argument('--out', required=True, help='Path to CSV output file')
     p_log.add_argument('--interval-seconds', type=int, default=300, help='Polling interval in seconds (default: 300)')
     p_log.add_argument('--skip-infrared', action='store_true', help='Exclude infrared remotes')
+    p_log.add_argument('--timezone', choices=['local', 'utc'], default='local', help='Timestamp timezone (default: local)')
     p_log.set_defaults(func=cmd_log_csv)
 
     return parser
