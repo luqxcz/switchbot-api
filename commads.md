@@ -22,3 +22,4 @@ List devices: python .\switchbot_client.py devices
 Get status: python .\switchbot_client.py status --device-id "<DEVICE_ID>"
 Get all statuses: python .\switchbot_client.py status-all
 Export all devices+statuses to CSV: python .\switchbot_client.py export-csv --out devices.csv
+Continuously log statuses to CSV: python .\switchbot_client.py log-csv --out timeseries.csv --interval-seconds 300

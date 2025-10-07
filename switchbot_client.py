@@ -2,8 +2,10 @@ import os
 import sys
 import json
 import csv
+import time
 import argparse
 from typing import Any, Dict, List
+from datetime import datetime
 
 import requests
 
@@ -150,6 +152,75 @@ def cmd_export_csv(args: argparse.Namespace) -> int:
         return 1
 
 
+def _determine_headers(rows: List[Dict[str, Any]]) -> List[str]:
+    headers: List[str] = []
+    seen = set()
+    for r in rows:
+        for k in r.keys():
+            if k not in seen:
+                seen.add(k)
+                headers.append(k)
+    return headers
+
+
+def cmd_log_csv(args: argparse.Namespace) -> int:
+    out_path = args.out
+    include_infrared = not args.skip_infrared
+    interval_seconds = args.interval_seconds
+    try:
+        writer = None
+        headers: List[str] = []
+        file_exists = os.path.exists(out_path)
+        file_empty = True
+        if file_exists:
+            try:
+                file_empty = os.path.getsize(out_path) == 0
+            except OSError:
+                file_empty = True
+
+        with open(out_path, 'a', newline='', encoding='utf-8-sig') as f:
+            # Lazy init writer after first sample to know headers
+            while True:
+                timestamp_iso = datetime.utcnow().isoformat() + 'Z'
+                rows = _collect_device_rows(include_infrared=include_infrared)
+                for r in rows:
+                    r['timestamp'] = timestamp_iso
+
+                if writer is None:
+                    if file_exists and not file_empty:
+                        # If file already has content, attempt to read header row to keep consistency
+                        # Fallback to determining from current rows if reading fails
+                        try:
+                            with open(out_path, 'r', encoding='utf-8-sig', newline='') as in_f:
+                                reader = csv.reader(in_f)
+                                existing_header = next(reader)
+                                if existing_header:
+                                    headers = list(existing_header)
+                                else:
+                                    headers = _determine_headers(rows)
+                        except Exception:
+                            headers = _determine_headers(rows)
+                    else:
+                        headers = _determine_headers(rows)
+
+                    writer = csv.DictWriter(f, fieldnames=headers, extrasaction='ignore')
+                    if file_empty:
+                        writer.writeheader()
+
+                for r in rows:
+                    writer.writerow(r)
+                f.flush()
+                print('Appended {} rows at {} to {}'.format(len(rows), timestamp_iso, out_path))
+                time.sleep(max(1, int(interval_seconds)))
+        # Unreachable due to infinite loop
+    except KeyboardInterrupt:
+        print('Stopped logging to CSV.')
+        return 0
+    except Exception as exc:
+        print('Error logging CSV: {}'.format(exc), file=sys.stderr)
+        return 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='SwitchBot API client')
     subparsers = parser.add_subparsers(dest='command')
@@ -168,6 +239,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_export.add_argument('--out', required=True, help='Path to CSV output file')
     p_export.add_argument('--skip-infrared', action='store_true', help='Exclude infrared remotes')
     p_export.set_defaults(func=cmd_export_csv)
+
+    p_log = subparsers.add_parser('log-csv', help='Continuously append timestamped device statuses to CSV')
+    p_log.add_argument('--out', required=True, help='Path to CSV output file')
+    p_log.add_argument('--interval-seconds', type=int, default=300, help='Polling interval in seconds (default: 300)')
+    p_log.add_argument('--skip-infrared', action='store_true', help='Exclude infrared remotes')
+    p_log.set_defaults(func=cmd_log_csv)
 
     return parser
 
