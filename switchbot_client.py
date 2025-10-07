@@ -5,7 +5,7 @@ import csv
 import time
 import argparse
 from typing import Any, Dict, List
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 
@@ -181,7 +181,7 @@ def cmd_log_csv(args: argparse.Namespace) -> int:
         with open(out_path, 'a', newline='', encoding='utf-8-sig') as f:
             # Lazy init writer after first sample to know headers
             while True:
-                timestamp_iso = datetime.utcnow().isoformat() + 'Z'
+                timestamp_iso = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
                 rows = _collect_device_rows(include_infrared=include_infrared)
                 for r in rows:
                     r['timestamp'] = timestamp_iso
