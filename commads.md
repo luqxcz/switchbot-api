@@ -34,3 +34,19 @@ Notes on timestamps
   - If `--timezone utc`, `timestamp` == `timestamp_utc`
   - If `--timezone local` (default), `timestamp` == `timestamp_local`
 - To ensure these new headers appear, start writing to a new CSV or make sure the destination CSV is empty so the header row includes the new columns.
+
+Automated EC2 deployment (Ubuntu)
+Run from PowerShell on your Windows machine, inside the project folder `C:\switchbot-api`:
+
+```
+./scripts/deploy_ec2.ps1 -PemPath .\API-WBPO.pem -RemoteHost 15.157.63.84 -User ubuntu -Token "<OPEN_TOKEN>" -Secret "<SECRET>" -Timezone local -OutPath /opt/switchbot-api/timeseries.csv
+```
+
+- Add `-SkipInfrared` to exclude infrared remotes.
+- Follow logs: `ssh -i "API-WBPO.pem" ubuntu@15.157.63.84 "sudo journalctl -u switchbot-logger.service -f"`.
+
+Alternatively, SSH to EC2 and run the setup script directly after copying the repo to `/opt/switchbot-api`:
+
+```
+sudo /opt/switchbot-api/scripts/setup_ec2_switchbot.sh --token "<OPEN_TOKEN>" --secret "<SECRET>" --out /opt/switchbot-api/timeseries.csv --timezone local --interval-seconds 300
+```
