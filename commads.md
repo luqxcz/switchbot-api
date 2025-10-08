@@ -50,3 +50,48 @@ Alternatively, SSH to EC2 and run the setup script directly after copying the re
 ```
 sudo /opt/switchbot-api/scripts/setup_ec2_switchbot.sh --token "<OPEN_TOKEN>" --secret "<SECRET>" --out /opt/switchbot-api/timeseries.csv --timezone local --interval-seconds 300
 ```
+### Where to run each command
+
+- Automated deployment (one-shot)
+  - Run from Windows PowerShell (local, in `C:\switchbot-api`):
+    ```powershell
+    ./scripts/deploy_ec2.ps1 -PemPath .\API-WBPO.pem -RemoteHost 15.157.63.84 -User ubuntu `
+      -Token "<OPEN_TOKEN>" -Secret "<SECRET>" -Timezone local -OutPath /opt/switchbot-api/timeseries.csv
+    ```
+  - Run on EC2 (after SSH-ing into the server):
+    ```bash
+    sudo /opt/switchbot-api/scripts/setup_ec2_switchbot.sh --token "<OPEN_TOKEN>" --secret "<SECRET>" \
+      --out /opt/switchbot-api/timeseries.csv --timezone local --interval-seconds 300
+    ```
+
+- Tail live service logs (5‑min appends)
+  - Run from Windows PowerShell (local):
+    ```powershell
+    ssh -i ".\API-WBPO.pem" ubuntu@15.157.63.84 "sudo journalctl -u switchbot-logger.service -f"
+    ```
+  - Run on EC2:
+    ```bash
+    sudo journalctl -u switchbot-logger.service -f
+    ```
+
+- Check CSV modified time + last rows
+  - Run from Windows PowerShell (local):
+    ```powershell
+    ssh -i ".\API-WBPO.pem" ubuntu@15.157.63.84 "sudo ls -l --time-style=full-iso /opt/switchbot-api/timeseries.csv && sudo tail -n 5 /opt/switchbot-api/timeseries.csv"
+    ```
+  - Run on EC2:
+    ```bash
+    sudo ls -l --time-style=full-iso /opt/switchbot-api/timeseries.csv
+    sudo tail -n 5 /opt/switchbot-api/timeseries.csv
+    ```
+
+- Download the CSV to your Windows machine
+  - Run from Windows PowerShell (local):
+    ```powershell
+    scp -i ".\API-WBPO.pem" ubuntu@15.157.63.84:/opt/switchbot-api/timeseries.csv .\timeseries.csv
+    ```
+    Optional with compression and timestamped filename:
+    ```powershell
+    $ts = Get-Date -Format yyyyMMdd_HHmmss
+    scp -C -i ".\API-WBPO.pem" ubuntu@15.157.63.84:/opt/switchbot-api/timeseries.csv ".\timeseries_$ts.csv"
+    ```
