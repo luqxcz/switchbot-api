@@ -39,11 +39,11 @@ Automated EC2 deployment (Ubuntu)
 Run from PowerShell on your Windows machine, inside the project folder `C:\switchbot-api`:
 
 ```
-./scripts/deploy_ec2.ps1 -PemPath .\API-WBPO.pem -RemoteHost 15.157.63.84 -User ubuntu -Token "<OPEN_TOKEN>" -Secret "<SECRET>" -Timezone local -OutPath /opt/switchbot-api/timeseries.csv
+./scripts/deploy_ec2.ps1 -PemPath .\API-WBPO.pem -RemoteHost 15.222.13.164 -User ubuntu -Token "<OPEN_TOKEN>" -Secret "<SECRET>" -Timezone local -OutPath /opt/switchbot-api/timeseries.csv
 ```
 
 - Add `-SkipInfrared` to exclude infrared remotes.
-- Follow logs: `ssh -i "API-WBPO.pem" ubuntu@15.157.63.84 "sudo journalctl -u switchbot-logger.service -f"`.
+- Follow logs: `ssh -i "API-WBPO.pem" ubuntu@15.222.13.164 "sudo journalctl -u switchbot-logger.service -f"`.
 
 Alternatively, SSH to EC2 and run the setup script directly after copying the repo to `/opt/switchbot-api`:
 
@@ -55,7 +55,7 @@ sudo /opt/switchbot-api/scripts/setup_ec2_switchbot.sh --token "<OPEN_TOKEN>" --
 - Automated deployment (one-shot)
   - Run from Windows PowerShell (local, in `C:\switchbot-api`):
     ```powershell
-    ./scripts/deploy_ec2.ps1 -PemPath .\API-WBPO.pem -RemoteHost 15.157.63.84 -User ubuntu `
+    ./scripts/deploy_ec2.ps1 -PemPath .\API-WBPO.pem -RemoteHost 15.222.13.164 -User ubuntu `
       -Token "<OPEN_TOKEN>" -Secret "<SECRET>" -Timezone local -OutPath /opt/switchbot-api/timeseries.csv
     ```
   - Run on EC2 (after SSH-ing into the server):
@@ -67,7 +67,7 @@ sudo /opt/switchbot-api/scripts/setup_ec2_switchbot.sh --token "<OPEN_TOKEN>" --
 - Tail live service logs (5‑min appends)
   - Run from Windows PowerShell (local):
     ```powershell
-    ssh -i ".\API-WBPO.pem" ubuntu@15.157.63.84 "sudo journalctl -u switchbot-logger.service -f"
+    ssh -i ".\API-WBPO.pem" ubuntu@15.222.13.164 "sudo journalctl -u switchbot-logger.service -f"
     ```
   - Run on EC2:
     ```bash
@@ -77,7 +77,7 @@ sudo /opt/switchbot-api/scripts/setup_ec2_switchbot.sh --token "<OPEN_TOKEN>" --
 - Check CSV modified time + last rows
   - Run from Windows PowerShell (local):
     ```powershell
-    ssh -i ".\API-WBPO.pem" ubuntu@15.157.63.84 "sudo ls -l --time-style=full-iso /opt/switchbot-api/timeseries.csv && sudo tail -n 5 /opt/switchbot-api/timeseries.csv"
+    ssh -i ".\API-WBPO.pem" ubuntu@15.222.13.164 "sudo ls -l --time-style=full-iso /opt/switchbot-api/timeseries.csv && sudo tail -n 5 /opt/switchbot-api/timeseries.csv"
     ```
   - Run on EC2:
     ```bash
@@ -88,10 +88,10 @@ sudo /opt/switchbot-api/scripts/setup_ec2_switchbot.sh --token "<OPEN_TOKEN>" --
 - Download the CSV to your Windows machine
   - Run from Windows PowerShell (local):
     ```powershell
-    scp -i ".\API-WBPO.pem" ubuntu@15.157.63.84:/opt/switchbot-api/timeseries.csv .\timeseries.csv
+    scp -i ".\API-WBPO.pem" ubuntu@15.222.13.164:/opt/switchbot-api/timeseries.csv .\timeseries.csv
     ```
     Optional with compression and timestamped filename:
     ```powershell
     $ts = Get-Date -Format yyyyMMdd_HHmmss
-    scp -C -i ".\API-WBPO.pem" ubuntu@15.157.63.84:/opt/switchbot-api/timeseries.csv ".\timeseries_$ts.csv"
+    scp -C -i ".\API-WBPO.pem" ubuntu@15.222.13.164:/opt/switchbot-api/timeseries.csv ".\timeseries_$ts.csv"
     ```
