@@ -7,7 +7,7 @@ param(
   [string] $OutPath = "/opt/switchbot-api/timeseries.csv",
   [ValidateSet("local", "utc")] [string] $Timezone = "local",
   [switch] $SkipInfrared,
-  [int] $IntervalSeconds = 300
+  [int] $IntervalSeconds = 1800
 )
 
 Set-StrictMode -Version Latest

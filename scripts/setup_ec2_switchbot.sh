@@ -13,7 +13,7 @@ REPO_DIR="/opt/switchbot-api"
 SERVICE_USER="ubuntu"
 OUT_PATH="/opt/switchbot-api/timeseries.csv"
 TIMEZONE="local"
-INTERVAL_SECONDS="300"
+INTERVAL_SECONDS="1800"
 SKIP_INFRARED="false"
 
 print_usage() {
@@ -123,7 +123,7 @@ fi
 
 cat > "$UNIT_FILE" <<UNIT
 [Unit]
-Description=SwitchBot CSV Logger (5-minute polling)
+Description=SwitchBot CSV Logger (30-minute polling)
 Wants=network-online.target
 After=network-online.target
 
